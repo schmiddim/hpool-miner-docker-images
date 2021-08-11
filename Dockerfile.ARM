@@ -1,0 +1,11 @@
+FROM arm32v7/ubuntu:20.04
+# @todo test me
+# https://github.com/hpool-dev/chia-miner/releases
+
+
+WORKDIR /arm-release
+# Install prerequisites
+
+COPY hpool-chia-miner-linux-arm . 
+COPY libchiapos.so . 
+CMD ["/app/hpool-chia-miner-linux-arm"]

@@ -1,0 +1,120 @@
+name:  docker-build-push-pipe
+#on:
+#  push:
+#    branches:
+#      - 'main'
+#    tags:
+#      - 'v*.*.*'
+on:
+  push:
+    paths:
+      - 'chia-miner-releases'
+jobs: 
+  build-and-push-amd64-image:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get Release version        
+        run: echo "LATEST_AMD64_RELEASE_VERSION=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest | jq -r '.tag_name')" >> $GITHUB_ENV  
+      - name: Get Release Url
+        run: echo "LATEST_AMD64_RELEASE_URL=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest |  jq -r '.assets|.[] |.browser_download_url' |grep linux)" >> $GITHUB_ENV  
+      - name: output software version
+        run: echo $LATEST_AMD64_RELEASE_URL version is  $LATEST_AMD64_RELEASE_VERSION
+      - name: wget
+        uses: wei/wget@v1
+        with:
+          args: -O amd64.zip $LATEST_AMD64_RELEASE_URL 
+      - name: Decompress 
+        uses: TonyBogdanov/zip@1.0
+        with:
+            args: unzip -j -qq ./amd64.zip  -d ./amd64-release
+            # -j ignores the main folder in zip file          
+      - name: Docker meta LINUX
+        id: metaAmd64 
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            schmiddim/hpool-miner-amd64
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr 
+            type=semver,pattern={{version}},value=${{ env.LATEST_AMD64_RELEASE_VERSION }}           
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}           
+      - name: Build and push AMD64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile.AMD64
+          push: true
+          tags: ${{ steps.metaAmd64.outputs.tags }}
+          labels: ${{ steps.metaAmd64.outputs.labels }}
+                        
+  build-and-push-arm-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get Release version        
+        run: echo "LATEST_ARM_RELEASE_VERSION=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest | jq -r '.tag_name')" >> $GITHUB_ENV  
+      - name: Get Release Url
+        run: echo "LATEST_ARM_RELEASE_URL=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest |  jq -r '.assets|.[] |.browser_download_url' |grep arm)" >> $GITHUB_ENV  
+      - name: output software version
+        run: echo $LATEST_ARM_RELEASE_URL version is  $LATEST_ARM_RELEASE_VERSION
+      - name: wget
+        uses: wei/wget@v1
+        with:
+          args: -O arm.zip $LATEST_ARM_RELEASE_URL 
+      - name: Decompress 
+        uses: TonyBogdanov/zip@1.0
+        with:
+            args: unzip -j -qq ./arm.zip  -d ./arm-release
+            # -j ignores the main folder in zip file
+      - name: Docker meta LINUX
+        id: metaArm 
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            schmiddim/hpool-miner-arm            
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr 
+            type=semver,pattern={{version}},value=${{ env.LATEST_ARM_RELEASE_VERSION }}                
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Build and push ARM64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/arm64
+          file: Dockerfile.ARM
+          push: true          
+          tags: ${{ steps.metaArm.outputs.tags }}
+          labels: ${{ steps.metaArm.outputs.labels }}
+
