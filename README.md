@@ -2,8 +2,8 @@
 [![docker-build-push-pipe](https://github.com/schmiddim/hpool-miner-docker-images/actions/workflows/push-to-docker.yml/badge.svg)](https://github.com/schmiddim/hpool-miner-docker-images/actions/workflows/push-to-docker.yml)
 # Hpool Miner Images 
 
-This repo creates new docker images if hpool releases a new version of the miner and pushes it to docker.io 
-
+This repo creates new docker images if hpool releases a new version of the miner and pushes it to docker.io.
+Source: https://github.com/hpool-dev/chia-miner/releases
 
 
 ## Usage
