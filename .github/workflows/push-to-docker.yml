@@ -16,6 +16,13 @@ jobs:
         run: echo "LATEST_ARM_RELEASE_URL=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest |  jq -r '.assets|.[] |.browser_download_url' |grep linux)" >> $GITHUB_ENV
       - name: output software version
         run: echo $LATEST_ARM_RELEASE_URL version is  $LATEST_ARM_RELEASE_VERSION
+      - name: download and extract artifact
+        uses: schmiddim/action-wget-unzip@master
+        with:
+          url: ${{ env.LATEST_ARM_RELEASE_VERSION}}
+          destination: arm-release
+
+
       - name: wget
         uses: wei/wget@v1
         with:
