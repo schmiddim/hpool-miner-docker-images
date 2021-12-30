@@ -1,4 +1,4 @@
-name: docker-build-push-pipe
+name: Build Image and Push to Registry
 on:
   push:
     paths:
