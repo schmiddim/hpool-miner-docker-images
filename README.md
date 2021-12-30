@@ -6,10 +6,7 @@ This repo creates new docker images if hpool releases a new version of the miner
 
 Source: https://github.com/hpool-dev/chia-miner/releases
 
+Docker: https://hub.docker.com/r/schmiddim/hpool-miner-arm
 
-## Usage
-as usual
 ## Fix for DNS issues on raspberry pi4
 https://github.com/hpool-dev/chia-miner/issues/535#issuecomment-864757175
-
-### [ARM](https://hub.docker.com/r/schmiddim/hpool-miner-arm)
