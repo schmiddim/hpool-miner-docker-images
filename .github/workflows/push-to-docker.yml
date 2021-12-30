@@ -19,7 +19,7 @@ jobs:
       - name: download and extract artifact
         uses: schmiddim/action-wget-unzip@master
         with:
-          url: ${{ env.LATEST_ARM_RELEASE_VERSION}}
+          url: ${{ env.LATEST_ARM_RELEASE_URL}}
           destination: arm-release
 
 
