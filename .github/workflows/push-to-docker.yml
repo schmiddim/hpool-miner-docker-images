@@ -4,7 +4,7 @@ on:
     paths:
       - 'chia-miner-releases'
 jobs:
-  new-build-and-push-arm-image:
+  build-and-push-arm-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
