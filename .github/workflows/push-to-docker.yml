@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'chia-miner-releases'
+  workflow_dispatch:
 jobs:
   build-and-push-arm-image:
     runs-on: ubuntu-latest
