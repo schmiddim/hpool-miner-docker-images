@@ -13,7 +13,7 @@ jobs:
       - name: Fetch release version
         run: |
           curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest | \
-          jq -r " .assets|.[] |.browser_download_url" |grep arm > chia-miner-releases
+          jq -r " .assets|.[] |.browser_download_url" |grep linux > chia-miner-releases
       - name: Check for modified files
         id: git-check
         run: echo ::set-output name=modified::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")

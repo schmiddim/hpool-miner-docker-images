@@ -8,14 +8,8 @@ Source: https://github.com/hpool-dev/chia-miner/releases
 
 
 ## Usage
-
+as usual
+## Fix for DNS issues on raspberry pi4
+https://github.com/hpool-dev/chia-miner/issues/535#issuecomment-864757175
 
 ### [ARM](https://hub.docker.com/r/schmiddim/hpool-miner-arm)
-```
-docker pull schmiddim/hpool-miner-arm
-```
-
-### [AMD64](https://hub.docker.com/r/schmiddim/hpool-miner-amd64)
-```
-docker pull schmiddim/hpool-miner-amd64
-```

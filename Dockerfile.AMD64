@@ -1,5 +1,0 @@
-FROM alpine:3.14
-# https://github.com/hpool-dev/chia-miner/releases
-WORKDIR /amd64-release
-RUN mv linux/* .  ; rm -Rf linux archive.zip
-CMD ["/app/hpool-miner-chia"]

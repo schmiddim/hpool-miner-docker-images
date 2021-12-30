@@ -3,9 +3,9 @@ FROM arm32v7/ubuntu:20.04
 # https://github.com/hpool-dev/chia-miner/releases
 
 
-WORKDIR /arm-release
+WORKDIR /app
 # Install prerequisites
 
-COPY * . 
+COPY arm-release/hpool-miner-chia-linux-arm . 
 
-CMD ["/app/hpool-chia-miner-linux-arm"]
+CMD ["/app/hpool-miner-chia-linux-arm"]
