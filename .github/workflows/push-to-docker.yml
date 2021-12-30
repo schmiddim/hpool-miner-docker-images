@@ -10,16 +10,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Get Release version
-        run: echo "LATEST_ARM_RELEASE_VERSION=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest | jq -r '.tag_name')" >> $GITHUB_ENV
-      - name: Get Release Url
-        run: echo "LATEST_ARM_RELEASE_URL=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest |  jq -r '.assets|.[] |.browser_download_url' |grep linux)" >> $GITHUB_ENV
-      - name: output software version
-        run: echo $LATEST_ARM_RELEASE_URL version is  $LATEST_ARM_RELEASE_VERSION
+      # - name: Get Release version
+      #   run: echo "LATEST_ARM_RELEASE_VERSION=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest | jq -r '.tag_name')" >> $GITHUB_ENV
+      # - name: Get Release Url
+      #   run: echo "LATEST_ARM_RELEASE_URL=$(curl -sL https://api.github.com/repos/hpool-dev/chia-miner/releases/latest |  jq -r '.assets|.[] |.browser_download_url' |grep linux)" >> $GITHUB_ENV
+      # - name: output software version
+      #   run: echo $LATEST_ARM_RELEASE_URL version is  $LATEST_ARM_RELEASE_VERSION
+      - name: Get Asset Url for an linux release
+        uses: schmiddim/action-gh-release-info@master
+        id: hello
+        with:
+          url: https://github.com/hpool-dev/chia-miner/
+          download_url_pattern: .*linux
       - name: download and extract artifact
         uses: schmiddim/action-wget-unzip@v1
         with:
-          url: ${{ env.LATEST_ARM_RELEASE_URL}}
+          url: ${{ steps.hello.outputs.release_url }}
           destination: arm-release
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -33,4 +39,4 @@ jobs:
           platforms: linux/arm64
           file: Dockerfile.ARM
           push: true
-          tags: schmiddim/hpool-miner-arm:${{ env.LATEST_ARM_RELEASE_VERSION}}
+          tags: schmiddim/hpool-miner-arm:${{ steps.hello.outputs.release_tag }}
